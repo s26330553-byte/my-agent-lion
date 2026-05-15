@@ -1,0 +1,28 @@
+# ============================================================
+# my-agent — GitHub 私有 repo .gitignore（pro-kit 07）
+# ============================================================
+
+# Claude Code 本機快取 / secrets（不上傳）
+.claude/mcp_settings.json
+.claude/settings.local.json
+.claude/projects/
+.claude/todos/
+.claude/statsig/
+
+# 含 API 金鑰的環境設定
+*.env
+.env.*
+**/client_secret*.json
+**/credentials.json
+**/token.json
+
+# OS 雜檔
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 草稿暫存
+100_Todo/drafts/**/*.tmp
+
+# Node / npm（若 skill 有 node_modules）
+node_modules/
