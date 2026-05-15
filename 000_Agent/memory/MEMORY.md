@@ -25,6 +25,7 @@
 ## 踩坑筆記
 
 - 長榮機位排名 HTML 報表需要從 HTTP 伺服器開啟才能讀 Google Sheets，直接用 file:// 開啟會 CORS 報錯
+- `gws.exe` 在 PowerShell 直接呼叫時 `--params` 的 JSON 引號會被 PowerShell 剝掉，導致「key must be a string」錯誤。**必須用 `cmd /c` 包裹**：`cmd /c '"C:\path\gws.exe" gmail users messages list --params "{\"userId\":\"me\"}"'`
 
 ---
 
