@@ -1,0 +1,30 @@
+{
+  "_comment": "MCP 設定範本。新機器安裝後把這份內容合併進 C:\\Users\\<帳號>\\.claude.json 的 mcpServers 區塊",
+  "mcpServers": {
+    "firecrawl": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "--allow-dir", "E:\\Data\\ericlin\\Downloads",
+        "--allow-dir", "E:\\Data\\ericlin\\Data",
+        "--allow-dir", "C:\\Users\\ericlin\\Desktop"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp"]
+    },
+    "cloudflare": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://observability.mcp.cloudflare.com/mcp"]
+    }
+  }
+}

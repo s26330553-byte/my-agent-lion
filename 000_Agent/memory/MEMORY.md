@@ -24,7 +24,7 @@
 
 ## 踩坑筆記
 
-- 長榮機位排名 HTML 報表（eva_seat_ranking.html）需要從 HTTP 伺服器開啟才能讀 Google Sheets，直接用 file:// 開啟會 CORS 報錯
+- 長榮機位排名 HTML 報表需要從 HTTP 伺服器開啟才能讀 Google Sheets，直接用 file:// 開啟會 CORS 報錯
 
 ---
 
@@ -36,6 +36,7 @@
 | 建立日期          | `2026-05-15`                                                        |
 | Skills junction   | ✅ `~/.claude/skills` → `000_Agent/skills/`                         |
 | 記憶系統啟用      | ✅                                                                   |
+| 日記功能          | ✅ 啟用（300_Journal/）                                              |
 | 長榮報表 HTML     | `C:\Users\ericlin\Projects\eva_seat_ranking.html`                   |
 | 長榮報表 Netlify  | https://rad-boba-c86be3.netlify.app/                                |
 | 長榮報表 GitHub   | https://github.com/s26330553-byte/eva-seat-ranking                  |
