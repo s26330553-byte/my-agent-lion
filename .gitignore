@@ -1,0 +1,4 @@
+# 排除暫存與系統檔
+*.tmp
+.DS_Store
+Thumbs.db
