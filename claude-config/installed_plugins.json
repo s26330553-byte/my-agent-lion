@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "plugins": {
+    "zeabur@zeabur": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\ericlin\\.claude\\plugins\\cache\\zeabur\\zeabur\\1.18.0",
+        "version": "1.18.0",
+        "installedAt": "2026-05-15T08:31:32.008Z",
+        "lastUpdated": "2026-05-15T08:31:32.008Z",
+        "gitCommitSha": "5026e620c0759b0aaf0e976ee4d367f04097c10e"
+      }
+    ]
+  }
+}

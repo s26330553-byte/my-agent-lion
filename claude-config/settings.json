@@ -1,0 +1,75 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -fr *)",
+      "Bash(rm -r *)",
+      "Bash(rm -R *)",
+      "Bash(rm -f *)",
+      "Bash(sudo *)",
+      "Bash(dd *)",
+      "Bash(mkfs*)",
+      "Bash(diskutil erase*)",
+      "Bash(chmod 777 *)",
+      "Bash(chmod -R 777 *)",
+      "Bash(git reset --hard*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git clean -f*)",
+      "Bash(git branch -D*)",
+      "Bash(shutdown*)",
+      "Bash(reboot*)",
+      "Bash(: >*)",
+      "Bash(truncate *)"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NonInteractive -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\ericlin\\Projects\\daily-report-cc.ps1\"",
+            "shell": "powershell",
+            "timeout": 10,
+            "statusMessage": "讀取每日報告..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NonInteractive -NoProfile -File \"C:\\Users\\ericlin\\.claude\\hooks\\session-time.ps1\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NonInteractive -NoProfile -File \"C:\\Users\\ericlin\\.claude\\statusline-command.ps1\""
+  },
+  "enabledPlugins": {
+    "zeabur@zeabur": true
+  },
+  "extraKnownMarketplaces": {
+    "zeabur": {
+      "source": {
+        "source": "github",
+        "repo": "zeabur/agent-skills"
+      }
+    }
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark",
+  "env": {
+    "EDITOR": "notepad.exe",
+    "GWS_BIN": "C:\\Users\\ericlin\\nodejs\\node-v22.15.0-win-x64\\node_modules\\@googleworkspace\\cli\\bin\\gws.exe",
+    "LINE_CHANNEL_ACCESS_TOKEN": "Xg0D6bKo6sLyDFBCAlJmzyTUqYJr07xKyds0ppJdXcgxI9W8tDuB38tr3EStTDz6oQDnrBGqraJryerOeby9KQvQ0ofM9Ks7V3yhRVXhjxeckUC4rtCjTpBixhJw7RY0g5ip4qmutlmBOWc2zJjN6QdB04t89/1O/w1cDnyilFU="
+  }
+}

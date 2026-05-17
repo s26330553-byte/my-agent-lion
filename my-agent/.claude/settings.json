@@ -24,6 +24,23 @@
     ],
     "defaultMode": "bypassPermissions"
   },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NonInteractive -NoProfile -File \"C:\\Users\\ericlin\\.claude\\hooks\\session-time.ps1\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NonInteractive -NoProfile -File \"C:\\Users\\ericlin\\.claude\\statusline-command.ps1\""
+  },
   "enabledPlugins": {
     "zeabur@zeabur": true
   },

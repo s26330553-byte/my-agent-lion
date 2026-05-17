@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>長榮機位排名分析</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; padding: 24px; color: #222; }
+h1   { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.subtitle { color: #888; font-size: 12px; margin-bottom: 16px; }
+
+.note {
+  font-size: 12px; color: #2d6a2d;
+  background: #edf7ed; border: 1px solid #c3e0c3;
+  padding: 8px 14px; border-radius: 4px; margin-bottom: 24px;
+}
+
+/* ── Loading / Error ── */
+#loading { text-align: center; padding: 48px; font-size: 14px; color: #888; }
+.err-box {
+  background: #fff3cd; border: 1px solid #ffc107;
+  padding: 12px 16px; border-radius: 4px;
+  font-size: 13px; color: #7c5a00; margin-bottom: 16px; display: none;
+}
+
+/* ── Accordion ── */
+.dest-section { margin-bottom: 12px; }
+
+.dest-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 16px;
+  background: #1a1a2e; color: #fff;
+  cursor: pointer; user-select: none;
+  border-radius: 4px;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
+}
+.dest-header:hover { background: #2a2a3e; }
+.dest-arrow { font-size: 12px; transition: transform 0.2s; }
+.dest-section.open .dest-arrow { transform: rotate(90deg); }
+
+.dest-body { display: none; }
+.dest-section.open .dest-body { display: block; }
+
+/* ── Flight Section ── */
+.flight-section { margin-top: 2px; margin-bottom: 2px; }
+
+.flight-title {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.4px;
+  color: #555; padding: 8px 14px;
+  background: #fff; border: 1px solid #ddd; border-top: none;
+  text-transform: uppercase;
+}
+.dest-section:first-child .flight-section:first-child .flight-title { border-top: 1px solid #ddd; }
+
+/* ── Month Grid ── */
+.month-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border: 1px solid #ddd; border-top: none;
+}
+.month-block { border-right: 1px solid #ddd; }
+.month-block:last-child { border-right: none; }
+
+.month-header {
+  font-size: 13px; font-weight: 700; text-align: center;
+  padding: 8px 4px; border-bottom: 1px solid #ddd;
+  background: #fff; color: #333;
+}
+.month-header.warn { background: #fff5f5; color: #c0392b; }
+
+.rank-row {
+  display: grid; grid-template-columns: 24px 1fr 68px;
+  align-items: stretch; border-bottom: 1px solid #eee;
+  min-height: 46px; background: #fff;
+}
+.rank-row:last-child { border-bottom: none; }
+
+.rank-num {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: #bbb;
+  border-right: 1px solid #eee; background: #fafafa;
+}
+.rank-info {
+  padding: 7px 8px; display: flex;
+  flex-direction: column; justify-content: center; gap: 2px;
+}
+.agency { font-size: 11px; color: #888; }
+.seats  { font-size: 12px; font-weight: 600; color: #333; }
+
+.rank-diff {
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 0 7px; font-size: 11px; color: #bbb;
+  border-left: 1px solid #eee; white-space: nowrap;
+}
+.rank-diff-trv {
+  display: flex; flex-direction: column; align-items: flex-end;
+  justify-content: center; padding: 4px 7px; gap: 3px;
+  border-left: 1px solid #eee;
+}
+.diff-up, .diff-down { font-size: 11px; font-weight: 700; white-space: nowrap; }
+
+.no-data-col {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 180px; font-size: 12px; color: #ccc;
+}
+
+/* TRV #1 */
+.trv-first { background: #fffbea; border-left: 3px solid #e6a817; }
+.trv-first .rank-num { background: #e6a817; color: #fff; border-right-color: #e6a817; }
+.trv-first .agency   { color: #a06000; font-weight: 700; }
+.trv-first .seats    { color: #7c4a00; font-size: 13px; }
+.trv-first .rank-diff-trv { border-left-color: #f5d68a; }
+.trv-first .diff-up, .trv-first .diff-down { color: #b8860b; }
+
+/* TRV not #1 */
+.trv-danger { background: #fff6f6; border-left: 3px solid #e53935; }
+.trv-danger .rank-num { background: #e53935; color: #fff; border-right-color: #e53935; }
+.trv-danger .agency   { color: #c62828; font-weight: 700; }
+.trv-danger .seats    { color: #b71c1c; font-size: 13px; }
+.trv-danger .rank-diff-trv { border-left-color: #ffcdd2; }
+.trv-danger .diff-up, .trv-danger .diff-down { color: #c62828; }
+
+/* ── Summary ── */
+.summary { background: #fff; border: 1px solid #ddd; margin-top: 20px; border-radius: 4px; overflow: hidden; }
+.summary-title {
+  font-size: 13px; font-weight: 700;
+  padding: 10px 14px; border-bottom: 1px solid #ddd;
+  background: #fafafa; color: #333;
+}
+.summary table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.summary th {
+  text-align: left; padding: 7px 12px;
+  background: #fafafa; border-bottom: 1px solid #ddd;
+  color: #666; font-weight: 600;
+}
+.summary td { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; }
+.summary tr:last-child td { border-bottom: none; }
+.warn-row td { background: #fff6f6; }
+.rank-cell { color: #c62828; font-weight: 700; }
+.gap-cell  { color: #c62828; font-weight: 700; }
+
+.footer { font-size: 11px; color: #bbb; margin-top: 14px; text-align: right; }
+
+</style>
+</head>
+<body>
+
+<h1>長榮機位旅行社排名分析</h1>
+<p class="subtitle">TRV = 雄獅旅行社（我方）</p>
+<div class="note">
+  ✅ 每次開啟此頁面會自動從 Google Sheets 讀取最新資料。
+  分享此 HTML 檔給同事，開啟後即可查看（需連線網路）。
+</div>
+
+<div class="err-box" id="err-box"></div>
+<div id="loading">🔄 正在讀取 Google Sheets 資料...</div>
+<div id="content" style="display:none"></div>
+
+<script>
+// ─────────────────────────────────────────────────────
+const SHEET_ID = '1S8-cPyo0W2FTwIFZTQCnjdDwVIhCr9mMcj60DImgjiY';
+const MONTHS   = [
+  { name:'5月', gid:0 },
+  { name:'6月', gid:1589094253 },
+  { name:'7月', gid:687426744 },
+  { name:'8月', gid:1439940775 },
+  { name:'9月', gid:2107263843 },
+];
+const AGENCIES = ['AHY','DAS','CFT','LIF','SET','SIG','TRV',
+                  '百威 BWT','世邦 COS','民生 MST','加利利 GLL','山富 RMD'];
+const TRV_IDX   = 6;
+const TRV_LABEL = 'TRV 雄獅';
+const TOP_N     = 5;
+
+// allData[monthIdx] = { [flightNum]: number[] }
+let allData = [];
+// destinations: [{ dest, flights:[num,...] }]  in spreadsheet order
+let destinations = [];
+
+// ── CSV fetch + parse ──────────────────────────────────
+function parseCSV(text) {
+  // Minimal CSV parser (handles quoted fields)
+  return text.split('\n').map(line => {
+    const cols = []; let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += ch; }
+    }
+    cols.push(cur.trim());
+    return cols;
+  });
+}
+
+async function fetchMonth(gid) {
+  // Google Sheets public CSV export
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  const res = await fetch(url, { redirect: 'follow', mode: 'cors' });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return parseCSV(await res.text());
+}
+
+function extractFlights(rows) {
+  // rows[0] = month header, rows[1] = agency header, rows[2+] = data
+  const data = {};
+  const dests = {};
+  let lastDest = '';
+  for (let i = 2; i < rows.length; i++) {
+    const r = rows[i];
+    const destVal   = r[0];
+    const flightVal = r[1];
+    if (destVal && !destVal.endsWith('TTL')) lastDest = destVal;
+    if (!flightVal || !/^BR\d+$/.test(flightVal)) continue;
+    data[flightVal]  = AGENCIES.map((_, j) => Number(r[j + 2]) || 0);
+    dests[flightVal] = lastDest;
+  }
+  return { data, dests };
+}
+
+// ── Load all months ────────────────────────────────────
+async function loadData() {
+  const results = await Promise.all(
+    MONTHS.map(m => fetchMonth(m.gid).then(rows => extractFlights(rows)))
+  );
+  allData = results.map(r => r.data);
+
+  // Build ordered destination list from month-0 (5月) then fill from others
+  const seen = new Set();
+  const destMap = {};  // dest -> [flights in order]
+  for (const { data, dests } of results) {
+    for (const num of Object.keys(data)) {
+      if (seen.has(num)) continue;
+      seen.add(num);
+      const dest = dests[num] || '其他';
+      if (!destMap[dest]) destMap[dest] = [];
+      destMap[dest].push(num);
+    }
+  }
+  destinations = Object.entries(destMap).map(([dest, flights]) => ({ dest, flights }));
+}
+
+// ── Ranking helper ─────────────────────────────────────
+function getRanked(monthIdx, flightNum) {
+  const vals = allData[monthIdx]?.[flightNum];
+  if (!vals) return null;
+  return AGENCIES
+    .map((name, i) => ({ name, idx: i, val: vals[i] }))
+    .filter(e => e.val > 0)
+    .sort((a, b) => b.val - a.val);
+}
+
+// ── Build month column HTML ────────────────────────────
+function monthBlockHTML(monthIdx, flightNum) {
+  const mName  = MONTHS[monthIdx].name;
+  const ranked = getRanked(monthIdx, flightNum);
+
+  if (!ranked || ranked.length === 0) {
+    return `<div class="month-block">
+      <div class="month-header">${mName}</div>
+      <div class="no-data-col">無資料</div>
+    </div>`;
+  }
+
+  const top    = ranked.slice(0, TOP_N);
+  const trvPos = top.findIndex(e => e.idx === TRV_IDX);
+  const isWarn = trvPos !== 0;
+
+  let html = `<div class="month-block">
+    <div class="month-header${trvPos > 0 ? ' warn' : ''}">${mName}${trvPos > 0 ? ' ⚠' : ''}</div>`;
+
+  for (let i = 0; i < top.length; i++) {
+    const e    = top[i];
+    const isTrv = e.idx === TRV_IDX;
+    const cls   = isTrv ? (trvPos === 0 ? 'trv-first' : 'trv-danger') : '';
+
+    let diff;
+    if (isTrv) {
+      const up   = i > 0            ? top[i-1].val - e.val : null;
+      const down = i < top.length-1 ? e.val - top[i+1].val : null;
+      diff = `<div class="rank-diff-trv">
+        ${up   !== null ? `<span class="diff-up">▲差${up}</span>`   : ''}
+        ${down !== null ? `<span class="diff-down">▼差${down}</span>` : ''}
+      </div>`;
+    } else {
+      const gap = i > 0 ? top[i-1].val - e.val : null;
+      diff = `<div class="rank-diff">${gap !== null ? `▲差${gap}` : '—'}</div>`;
+    }
+
+    html += `<div class="rank-row ${cls}">
+      <div class="rank-num">${i+1}</div>
+      <div class="rank-info">
+        <span class="agency">${isTrv ? TRV_LABEL : e.name}</span>
+        <span class="seats">對團數 ${e.val}</span>
+      </div>
+      ${diff}
+    </div>`;
+  }
+
+  return html + '</div>';
+}
+
+// ── Summary table (per destination) ───────────────────
+function summaryHTML(flights) {
+  const rows = [];
+  for (const num of flights) {
+    for (let m = 0; m < MONTHS.length; m++) {
+      const ranked = getRanked(m, num);
+      if (!ranked || ranked.length === 0) continue;
+      const trvEntry = ranked.find(e => e.idx === TRV_IDX);
+      if (!trvEntry || trvEntry.val === 0) continue;
+      const trvRank = ranked.indexOf(trvEntry) + 1;
+      if (trvRank === 1) continue;
+      const leader = ranked[0];
+      rows.push({
+        num, month: MONTHS[m].name, rank: trvRank,
+        first: `${leader.idx === TRV_IDX ? TRV_LABEL : leader.name}（對團數 ${leader.val}）`,
+        trv: trvEntry.val, gap: leader.val - trvEntry.val
+      });
+    }
+  }
+  if (!rows.length) return '';
+  return `<div class="summary">
+    <div class="summary-title">⚠ 需關注警示（TRV 非第一名）</div>
+    <table>
+      <thead><tr>
+        <th>航班</th><th>月份</th><th>TRV 排名</th>
+        <th>第1名</th><th>TRV 對團數</th><th>落後差距</th>
+      </tr></thead>
+      <tbody>${rows.map(r => `<tr class="warn-row">
+        <td>${r.num}</td><td>${r.month}</td>
+        <td class="rank-cell">第 ${r.rank} 名</td>
+        <td>${r.first}</td><td>${r.trv}</td>
+        <td class="gap-cell">－${r.gap} 席</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+// ── Render ─────────────────────────────────────────────
+function render() {
+  // Default: open 北海道 (or first dest)
+  const defaultOpen = destinations.some(d => d.dest === '北海道') ? '北海道' : destinations[0]?.dest;
+
+  let html = destinations.map(({ dest, flights }) => {
+    const isOpen = dest === defaultOpen;
+    const flightSections = flights.map(num => `
+      <div class="flight-section">
+        <div class="flight-title">${num}</div>
+        <div class="month-grid">${MONTHS.map((_, i) => monthBlockHTML(i, num)).join('')}</div>
+      </div>`).join('');
+
+    return `<div class="dest-section${isOpen ? ' open' : ''}">
+      <div class="dest-header" onclick="this.parentElement.classList.toggle('open')">
+        <span>${dest}</span>
+        <span class="dest-arrow">▶</span>
+      </div>
+      <div class="dest-body">${flightSections}${summaryHTML(flights)}</div>
+    </div>`;
+  }).join('');
+
+  html += `<p class="footer">資料來源：長榮每週機位數追蹤 ｜ 每次開啟頁面自動更新</p>`;
+
+  const el = document.getElementById('content');
+  el.innerHTML = html;
+  el.style.display = 'block';
+}
+
+function toggleDest(el) {
+  // Don't collapse if click is inside the body content
+  el.classList.toggle('open');
+}
+
+// ── Init ───────────────────────────────────────────────
+async function init() {
+  if (location.protocol === 'file:') {
+    document.getElementById('loading').style.display = 'none';
+    const box = document.getElementById('err-box');
+    box.style.display = 'block';
+    box.innerHTML = `
+      📂 你正在用 <b>file://</b> 直接開啟此頁面，瀏覽器會封鎖跨來源的資料請求。<br><br>
+      <b>解法 A（推薦）：</b>用 PowerShell 啟動本機伺服器：<br>
+      <code style="background:#fff;padding:2px 6px;border-radius:3px;font-size:11px;display:inline-block;margin:4px 0">
+        cd "${window.location.pathname.replace(/\/[^/]+$/, '').replace(/^\//, '').replace(/\//g, '\\')}"; python -m http.server 8080
+      </code><br>
+      然後瀏覽器開啟 <b>http://localhost:8080/eva_seat_ranking.html</b><br><br>
+      <b>解法 B：</b>將此 HTML 上傳至任意網址（如 Netlify Drop），用網址開啟即可。`;
+    return;
+  }
+  try {
+    await loadData();
+    document.getElementById('loading').style.display = 'none';
+    render();
+  } catch (err) {
+    document.getElementById('loading').style.display = 'none';
+    const box = document.getElementById('err-box');
+    box.style.display = 'block';
+    box.innerHTML = `⚠ 無法讀取資料：${err.message}<br>
+      請確認網路連線，並確認 Google Sheets 設定為「知道連結的人可以查看」。`;
+  }
+}
+init();
+</script>
+</body>
+</html>
