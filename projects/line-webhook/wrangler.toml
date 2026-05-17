@@ -1,0 +1,13 @@
+name = "line-webhook"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "LINE_USERS"
+id = "d58dd23caac94b22bcc55acb804501b5"
+
+# 早上 08:50 台灣時間（UTC 00:50）、下午 17:00 台灣時間（UTC 09:00）
+# 僅週一到週五
+[triggers]
+crons = ["50 0 * * 1-5", "0 9 * * 1-5"]
