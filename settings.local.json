@@ -1,0 +1,73 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Set-ExecutionPolicy *)",
+      "PowerShell(Test-Path *)",
+      "PowerShell(Get-Content *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(echo $PROFILE)",
+      "PowerShell(powershell -NoLogo -Command \"Get-Command cc; \\(Get-Command cc\\).Definition\")",
+      "PowerShell(New-Item *)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\); where.exe jq 2>&1)",
+      "PowerShell(Copy-Item *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe\" \"C:\\\\Users\\\\s2633\\\\.claude\\\\hooks\\\\session-time.sh\"; Get-Content \"C:\\\\Users\\\\s2633\\\\.claude\\\\last-session-msg\" -ErrorAction SilentlyContinue)",
+      "Bash(Get-Content *)",
+      "Bash(where gws *)",
+      "Bash(npm --version)",
+      "Bash(gws *)",
+      "Bash(npx skills *)",
+      "Skill(gws-drive)",
+      "Skill(gws-sheets-read)",
+      "Bash(cmd.exe /c \"dir /A:L C:\\\\Users\\\\s2633\\\\.claude\\\\skills 2>nul\")",
+      "Bash(mkdir -p 100_Todo/drafts/seat-control)",
+      "Bash(mkdir -p 100_Todo/drafts/itineraries)",
+      "Bash(mkdir -p 100_Todo/drafts/competitive-analysis)",
+      "Bash(mkdir -p 100_Todo/drafts/notion-docs)",
+      "Bash(mkdir -p 100_Todo/drafts/line-messages)",
+      "Bash([ -L \"$HOME/.claude/skills\" ])",
+      "PowerShell(Get-ChildItem *)",
+      "Bash(cmd.exe /c \"rmdir /s /q C:\\\\Users\\\\s2633\\\\.claude\\\\skills\")",
+      "Bash(cmd.exe /c \"rmdir C:\\\\Users\\\\s2633\\\\.claude\\\\skills\")",
+      "Bash(cmd.exe /c \"mklink /J C:\\\\Users\\\\s2633\\\\.claude\\\\skills \\\\\"G:\\\\我的雲端硬碟\\\\my-agent\\\\000_Agent\\\\skills\\\\\"\")",
+      "Bash(cmd.exe /c \"fsutil reparsepoint query C:\\\\Users\\\\s2633\\\\.claude\\\\skills 2>nul | findstr /i target\")",
+      "Bash(cmd.exe /c \"dir C:\\\\Users\\\\s2633\\\\.claude\\\\skills 2>nul | head -5\")",
+      "Bash(cmd.exe /c \"rd C:\\\\Users\\\\s2633\\\\.claude\\\\skills 2>&1\")",
+      "Bash(cmd.exe *)",
+      "Bash(mkdir -p \"G:/我的雲端硬碟/my-agent/000_Agent/scripts\")",
+      "Bash(cat)",
+      "Bash(gh auth *)",
+      "PowerShell(where.exe gh 2>$null; if \\($LASTEXITCODE -ne 0\\) { \"gh CLI 未安裝\" })",
+      "Bash(git *)",
+      "PowerShell(git *)",
+      "PowerShell(git -C \"G:\\\\�ڪ����ݵw��\\\\my-agent\" commit -m $msg 2>&1)",
+      "Bash(mkdir -p \"G:/我的雲端硬碟/my-agent/.claude/bin\")",
+      "Bash(cp /c/Users/s2633/bin/statusline.bat /c/Users/s2633/bin/session-time.bat /c/Users/s2633/bin/npp-editor.bat \"G:/我的雲端硬碟/my-agent/.claude/bin/\")",
+      "Skill(seat-analysis)",
+      "Skill(update-config)",
+      "Bash(gh repo *)",
+      "PowerShell(gh repo view s26330553-byte/my-agent-lion --json name,isEmpty,defaultBranchRef 2>&1)"
+    ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NonInteractive -NoProfile -File \"C:\\Users\\s2633\\.claude\\hooks\\sync-settings.ps1\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "powershell -NonInteractive -NoProfile -File \"C:\\Users\\s2633\\.claude\\hooks\\session-time.ps1\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "C:\\Users\\s2633\\bin\\statusline.bat"
+  }
+}

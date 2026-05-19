@@ -1,0 +1,29 @@
+# 敏感憑證
+.credentials.json
+
+# 執行期快取 / 暫存
+cache/
+daemon/
+sessions/
+session-env/
+shell-snapshots/
+paste-cache/
+file-history/
+last-session-msg
+history.jsonl
+
+# Junction（指向 Google Drive，不備份本體）
+skills
+hooks
+
+# 備份檔
+*.backup.*
+CLAUDE.md.backup_*
+
+# Claude Code 內部 session 檔案（對話記錄，不備份）
+projects/**/*.jsonl
+projects/C--Users-s2633/[0-9a-f]*-*/
+projects/C--Users-s2633-*/
+projects/D--*/
+.last-cleanup
+plugins/
