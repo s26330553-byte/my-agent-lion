@@ -5,8 +5,8 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 01811a17-d1ca-4c3a-bb7c-a02304ced460
+originSessionId: 693f31e0-8468-4701-8021-5ffd8e729e15
 ---
-
 # 航司票價查詢工具
 
 已完成並上線（2026-05-19）。
@@ -20,7 +20,7 @@ metadata:
 | 線上網址 | https://s26330553-byte.github.io/airline-price-lookup |
 | GitHub | https://github.com/s26330553-byte/airline-price-lookup |
 | 本機路徑 | `C:\Users\s2633\Documents\airline-price-lookup\` |
-| 存取密碼 | 123456（前端密碼鎖，sessionStorage 記住） |
+| 存取密碼 | 750704（前端密碼鎖，sessionStorage 記住） |
 
 ## 目前資料範圍
 

@@ -45,7 +45,26 @@
       "Skill(seat-analysis)",
       "Skill(update-config)",
       "Bash(gh repo *)",
-      "PowerShell(gh repo view s26330553-byte/my-agent-lion --json name,isEmpty,defaultBranchRef 2>&1)"
+      "PowerShell(gh repo view s26330553-byte/my-agent-lion --json name,isEmpty,defaultBranchRef 2>&1)",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\s2633\\\\stock-sim\\\\templates\")",
+      "Bash(Out-Null)",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\s2633\\\\stock-sim\\\\data\")",
+      "Bash(Write-Host \"OK\")",
+      "PowerShell(python --version 2>&1)",
+      "PowerShell(python -m pip --version 2>&1)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\s2633\\\\stock-sim\"; Start-Job -ScriptBlock { Set-Location \"C:\\\\Users\\\\s2633\\\\stock-sim\"; node server.js 2>&1 } | Out-Null; Start-Sleep -Seconds 4; Invoke-WebRequest -Uri \"http://localhost:3000/api/portfolio\" -UseBasicParsing -TimeoutSec 5 | Select-Object -ExpandProperty StatusCode)",
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"Set-Location 'C:\\\\Users\\\\s2633\\\\stock-sim'; node server.js\" -WindowStyle Normal)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:5000/\" -UseBasicParsing -MaximumRedirection 0 -ErrorAction SilentlyContinue; $r.StatusCode)",
+      "PowerShell(Invoke-WebRequest -Uri \"https://query1.finance.yahoo.com/v10/finance/quoteSummary/2330.TW?modules=summaryDetail\" -Headers @{\"User-Agent\"=\"Mozilla/5.0\"} -UseBasicParsing -TimeoutSec 8 | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty quoteSummary | Select-Object -ExpandProperty result | ForEach-Object { $_.summaryDetail } | Select-Object trailingPE, priceToBook, dividendYield)",
+      "Bash(find \"G:/我的雲端硬碟\" -name \"*.pdf\" -o -name \"*.xlsx\" -o -name \"*.xls\" -o -name \"*.csv\" -o -name \"*.jpg\" -o -name \"*.png\" | grep -i \"CI\\\\|促銷\\\\|特價\\\\|sale\\\\|promo\" 2>/dev/null | head -20)",
+      "mcp__filesystem__read_media_file",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_evaluate",
+      "mcp__filesystem__read_text_file",
+      "PowerShell([System.IO.File]::ReadAllText\\(\"G:\\\\我的雲端硬碟\\\\BR長榮航空\\\\長榮東北亞6-8月TTE旅展票價.gsheet\", [System.Text.Encoding]::UTF8\\))"
     ]
   },
   "hooks": {
